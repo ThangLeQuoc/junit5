@@ -15,10 +15,13 @@ from three different sub projects
 >JUnit 5 required Java 8 to work
 
 ### JUnit Platform
+The platform is responsible for launching testing frameworks on the JVM. It defines a stable and powerful interface between JUnit and its client such as build tools.
 
+The final objective is how its clients get integrated easily with JUnit in discovering and executing the tests.
+
+It also defines the TestEngine API for developing a testing framework that runs on the JUnit platform. By that, you can plug-in 3rd party testing libraries, directly into JUnit, by implementing custom TestEngine.
 ### JUnit Jupiter
 JUnit Jupiter is the combination of the new programming model and extension model for writing tests and extensions in JUnit 5
-
 ### JUnit Vintage
 Support running JUnit 3 and JUnit 4 based tests on JUnit 5 platform
 ### Basic Annotations
@@ -75,7 +78,9 @@ public void testFishCreation() {
 ![Result with display name](https://i.imgur.com/tGdk445.png)
 
 #### `@Tag`
-
+(work in progress)
+#### `@Nested`
+(work in progress)
 #### Assertion
 ##### `assertAll()`
 It is now possible to group assertions with `assertAll()` which will report any failed assertions within the group with a `MultipleFailuresError`
@@ -150,14 +155,48 @@ public void testSetPrice_ShouldThrowException_JUnit5Expression() {
 }
 ```
 #### Assumptions
-### Migration from JUnit 4 to Junit 5
+Assumptions are typically used whenever it does not make sense to continue execution of a given test method — for example, if the test depends on something that does not exist in the current runtime environment.
+```
+assumeTrue()
+assumeFalse()
+assumeNoException()
+assumeNotNull()
+```
 
+```
+public class AppTest {
+    @Test
+    void testOnDev()
+    {
+        System.setProperty("ENV", "DEV");
+        Assumptions.assumeTrue("DEV".equals(System.getProperty("ENV")));
+        //remainder of test will proceed
+    }
 
-##### Tiny Note
+    @Test
+    void testOnProd()
+    {
+        System.setProperty("ENV", "PROD");
+        Assumptions.assumeTrue("DEV".equals(System.getProperty("ENV")), AppTest::message);
+        //remainder of test will be aborted
+    }
 
+    private static String message () {
+        return "TEST Execution Failed :: ";
+    }
+}
+```
+#### Dynamic Test with `@TestFactory`
+(work in progress)
 ###### References
 http://www.baeldung.com/junit-5
+
 http://www.baeldung.com/junit-5-preview
+
+https://howtodoinjava.com/junit-5/junit-5-assumptions-examples/
+
 https://stackoverflow.com/questions/40796756/assertall-vs-multiple-assertions-in-junit5
+
+http://www.baeldung.com/junit5-dynamic-tests
 
 
